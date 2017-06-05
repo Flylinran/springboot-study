@@ -1,4 +1,4 @@
-package vo;
+package cn.flylinran.vo;
 
 import java.util.HashMap;
 import java.util.Map;
