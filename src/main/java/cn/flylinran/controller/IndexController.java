@@ -1,6 +1,7 @@
 package cn.flylinran.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -14,7 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class IndexController {
 
     @RequestMapping("/index")
-    public String index() {
+    public String index(ModelMap map) {
+        map.addAttribute("name", "xiaohu");
         return "index";
     }
 }
