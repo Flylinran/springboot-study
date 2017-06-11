@@ -1,13 +1,10 @@
-package cn.flylinran.vo;
+package cn.flylinran.domain;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * author: huzunrong
- * date: 2017/6/5
- * description: 自定义响应实体
- * version: 1.0
+ * 自定义响应实体
  */
 public class Msg {
 

@@ -1,0 +1,6 @@
+server:
+  port: 8080
+
+student:
+  name: 胡遵榕
+  age: 22
