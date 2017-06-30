@@ -1,4 +1,4 @@
-package cn.flylinran.domain;
+package cn.flylinran.vo;
 
 import java.util.HashMap;
 import java.util.Map;

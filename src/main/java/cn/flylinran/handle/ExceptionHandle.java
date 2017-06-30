@@ -1,6 +1,6 @@
 package cn.flylinran.handle;
 
-import cn.flylinran.domain.Msg;
+import cn.flylinran.vo.Msg;
 import cn.flylinran.exception.BusinessException;
 import cn.flylinran.exception.ExceptionCode;
 import cn.flylinran.exception.ParameterException;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @ControllerAdvice
 public class ExceptionHandle {
 
-    private final static Logger logger = LoggerFactory.getLogger(ExceptionHandle.class);
+    private static Logger logger = LoggerFactory.getLogger(ExceptionHandle.class);
 
     /**
      * 基于@ExceptionHandler异常处理
@@ -30,7 +30,8 @@ public class ExceptionHandle {
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
     public Msg exp(Exception ex) {
-        System.out.println(ex.getMessage());
+        logger.info("异常信息 -> {}", ex.getMessage());
+        ex.printStackTrace();
         if (ex instanceof BusinessException) {
             return Msg.fail()
                     .setCode(((BusinessException) ex).getCode())

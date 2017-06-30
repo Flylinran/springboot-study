@@ -1,6 +1,17 @@
 server:
-  port: 8080
+  port: 8081
 
-student:
-  name: 胡遵榕
-  age: 22
+spring:
+  datasource:
+      url: jdbc:mysql://localhost:3306/test?useSSL=true
+      driver-class-name: com.mysql.jdbc.Driver
+      username: root
+      password: root
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+logging:
+    file: C:/logs/spring-boot.log
+    level: debug

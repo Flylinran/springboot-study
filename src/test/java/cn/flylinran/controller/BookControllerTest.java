@@ -29,12 +29,12 @@ public class BookControllerTest {
     @Test
     public void bookList() throws Exception {
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/book")
-                .param("pn", "1")
-                .param("pageSize", "2"))
+                .param("pageNum", "0")
+                .param("pageSize", "6"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
         String resultStr = mvcResult.getResponse().getContentAsString();
-        System.out.println(resultStr);
+//        System.out.println(resultStr);
     }
 
 }

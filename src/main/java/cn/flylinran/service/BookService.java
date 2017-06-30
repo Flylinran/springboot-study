@@ -3,7 +3,7 @@ package cn.flylinran.service;
 import cn.flylinran.domain.Book;
 import org.springframework.data.domain.Page;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * author: huzunrong
@@ -12,17 +12,17 @@ import java.util.List;
  * version: 1.0
  */
 public interface BookService {
-    List<Book> findAll() throws Exception;
 
-    Page<Book> findPage(Integer pn, Integer pageSize) throws Exception;
+    Page<Book> findPage(Integer pn, Integer pageSize);
 
-    Book findByUid(String uid) throws Exception;
+    Book findById(Integer id);
 
-    boolean save(Book book) throws Exception;
+    Map<String, Object> findAllBookInfo(Integer pageNum, Integer pageSize);
 
-    boolean update(Book book) throws Exception;
+    Book save(Book book);
 
-    boolean deleteByUid(String uid) throws Exception;
+    boolean update(Book book);
 
-    boolean delete(Book book) throws Exception;
+    boolean deleteById(Integer id);
+
 }
