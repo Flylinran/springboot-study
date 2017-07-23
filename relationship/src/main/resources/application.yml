@@ -1,6 +1,3 @@
-server:
-  port: 8081
-
 spring:
   datasource:
       url: jdbc:mysql://localhost:3306/test?useSSL=true
@@ -13,5 +10,4 @@ spring:
       ddl-auto: update
     show-sql: true
 logging:
-    file: C:/logs/spring-boot.log
-    level: debug
+    file: logs/spring-boot.log

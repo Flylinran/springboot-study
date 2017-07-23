@@ -93,3 +93,6 @@ buildNumber.properties
 .metadata
 
 .keystore
+
+/logs/
+*.log
