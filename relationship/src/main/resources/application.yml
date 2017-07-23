@@ -10,4 +10,4 @@ spring:
       ddl-auto: update
     show-sql: true
 logging:
-    file: logs/spring-boot.log
+    file: logs/relationship.log

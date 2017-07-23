@@ -94,5 +94,5 @@ buildNumber.properties
 
 .keystore
 
-/logs/
+logs/
 *.log
