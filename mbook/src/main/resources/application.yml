@@ -1,0 +1,10 @@
+spring:
+  profiles:
+    active: dev
+#  cache:
+#    type: simple
+
+author:
+  name: huzunrong
+  email: flylinran@163.com
+
