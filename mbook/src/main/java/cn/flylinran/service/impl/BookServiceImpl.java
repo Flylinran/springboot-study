@@ -1,6 +1,6 @@
 package cn.flylinran.service.impl;
 
-import cn.flylinran.domain.Book;
+import cn.flylinran.entity.Book;
 import cn.flylinran.repos.BookRepository;
 import cn.flylinran.service.BookService;
 import cn.flylinran.service.CategoryService;
@@ -41,11 +41,11 @@ public class BookServiceImpl implements BookService {
     @Override
     public Page<Book> findPage(Integer pageNum, Integer pageSize) {
         Pageable pageable = new PageRequest(pageNum, pageSize);
-        return bookRepository.findAll(pageable);
+        return bookRepository.findAllByDeletedFalse(pageable);
     }
 
     @Override
-    @Cacheable(value = CACHE_NAME, key = "#id + 'byId'")
+//    @Cacheable(value = CACHE_NAME, key = "#id + 'byId'")
     public Book findById(long id) {
         logger.info("info -> {}", "没有从缓存拿数据");
         return bookRepository.findOne(id);
@@ -58,6 +58,7 @@ public class BookServiceImpl implements BookService {
         map.put("totalPages", page.getTotalPages());
         map.put("number", page.getNumber());
         map.put("numberOfElements", page.getNumberOfElements());
+        map.put("totalElements", page.getTotalElements());
 
         List<Book> bookList = page.getContent();
         List<BookVo> books = new ArrayList<>();
@@ -84,7 +85,7 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     @Override
-    @CachePut("book")
+//    @CachePut("book")
     public Book save(Book book) {
         return bookRepository.save(book);
     }
@@ -96,7 +97,7 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     @Override
-    @CacheEvict(value = CACHE_NAME, key = "#id + 'byId'")
+//    @CacheEvict(value = CACHE_NAME, key = "#id + 'byId'")
     public boolean deleteById(long id) {
         return 1 == bookRepository.logicalDeleteById(id);
     }

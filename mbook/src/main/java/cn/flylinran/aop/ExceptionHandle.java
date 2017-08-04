@@ -1,4 +1,4 @@
-package cn.flylinran.handle;
+package cn.flylinran.aop;
 
 import cn.flylinran.exception.BusinessException;
 import cn.flylinran.exception.ExceptionCode;
@@ -38,6 +38,7 @@ public class ExceptionHandle {
         }
         return Msg.fail()
                 .setCode(ExceptionCode.EX_10002.getCode())
-                .setMessage(ExceptionCode.EX_10002.getMessage());
+                .setMessage(ExceptionCode.EX_10002.getMessage())
+                .add("ex", ex.getMessage());
     }
 }

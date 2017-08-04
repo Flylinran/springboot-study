@@ -1,4 +1,4 @@
-package cn.flylinran.domain;
+package cn.flylinran.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

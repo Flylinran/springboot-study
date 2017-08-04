@@ -1,6 +1,6 @@
 package cn.flylinran.service;
 
-import cn.flylinran.domain.Category;
+import cn.flylinran.entity.Category;
 
 import java.util.List;
 

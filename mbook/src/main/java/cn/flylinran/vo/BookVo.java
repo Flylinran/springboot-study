@@ -1,6 +1,6 @@
 package cn.flylinran.vo;
 
-import cn.flylinran.domain.Book;
+import cn.flylinran.entity.Book;
 import com.alibaba.fastjson.JSONObject;
 
 /**

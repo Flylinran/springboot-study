@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-default/index.css">
+    <style>
+        .demo-table-expand {
+            font-size: 0;
+        }
+
+        .demo-table-expand label {
+            width: 90px;
+            color: #99a9bf;
+        }
+
+        .demo-table-expand .el-form-item {
+            margin-right: 0;
+            margin-bottom: 0;
+            width: 50%;
+        }
+    </style>
+</head>
+
+<body>
+<div id="app">
+    <el-row :gutter="20">
+        <el-col :span="16" :offset="4">
+            <p>
+            <h3>图书管理</h3> <span> {{ time.toString() }}</span>
+            <el-button type="primary" @click="handleAdd" :class="'pull-right'">新增图书</el-button>
+            </p>
+            <br>
+            <el-table :data="tableData" stripe :default-sort="{prop: 'id', order: 'ascending'}" style="width: 100%">
+                <el-table-column type="expand">
+                    <template scope="props">
+                        <el-form label-position="left" inline class="demo-table-expand">
+                            <el-form-item label="图书 ID">
+                                <span>{{ props.row.id }}</span>
+                            </el-form-item>
+                            <el-form-item label="图书名称">
+                                <span>{{ props.row.name }}</span>
+                            </el-form-item>
+                            <el-form-item label="图书作者">
+                                <span>{{ props.row.author }}</span>
+                            </el-form-item>
+                            <el-form-item label="图书分类">
+                                <span>{{ props.row.categoryName }}</span>
+                            </el-form-item>
+                            <el-form-item label="图书价格">
+                                <span>{{ props.row.price }}</span>
+                            </el-form-item>
+                            <el-form-item label="图书库存">
+                                <span>{{ props.row.stock }}</span>
+                            </el-form-item>
+                            <el-form-item label="图书简介">
+                                <span>{{ props.row.description }}</span>
+                            </el-form-item>
+                        </el-form>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="id" sortable label="图书 ID"></el-table-column>
+                <el-table-column prop="name" sortable label="书名"></el-table-column>
+                <el-table-column prop="author" sortable label="作者"></el-table-column>
+                <el-table-column prop="price" sortable label="价格"></el-table-column>
+                <el-table-column prop="stock" label="库存"></el-table-column>
+                <el-table-column label="操作">
+                    <template scope="scope">
+                        <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                        <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <div v-if="tableData.length > 0" class="pull-right" style="margin-top:10px;">
+                <el-pagination layout="total, prev, pager, next, jumper" :total="page.total" :page-size="page.pageSize" :current-page.sync="page.pageNum"
+                               @current-change="currentChange">
+                </el-pagination>
+            </div>
+        </el-col>
+    </el-row>
+    <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" top="10%">
+        <el-form :model="bookForm" ref="bookForm" :rules="bookFormRules" label-width="80px">
+            <el-form-item label="书名" prop="name">
+                <el-input v-model="bookForm.name" placeholder="输入书名"></el-input>
+            </el-form-item>
+            <el-form-item label="作者" prop="author">
+                <el-input v-model="bookForm.author" placeholder="输入作者"></el-input>
+            </el-form-item>
+            <el-form-item label="价格" prop="price">
+                <el-input v-model="bookForm.price" placeholder="输入价格"></el-input>
+            </el-form-item>
+            <el-form-item label="数量" prop="stock">
+                <el-input v-model="bookForm.stock" placeholder="输入数量"></el-input>
+            </el-form-item>
+            <el-form-item label="简介" prop="description">
+                <el-input type="textarea" v-model="bookForm.description" placeholder="输入简介"></el-input>
+            </el-form-item>
+            <el-form-item label="类别" prop="categoryId">
+                <el-select v-model="bookForm.categoryId" placeholder="请选择图书类别">
+                    <el-option v-for="item in categories" :key="item.id" :label="item.name" :value="item.id">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="handleSubmit('bookForm')">确 定</el-button>
+        </div>
+    </el-dialog>
+</div>
+</body>
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script>
+    var basePath = '';
+    var vm = new Vue({
+        el: '#app',
+        data: function () {
+            return {
+                time: new Date(),
+                dialogFormVisible: false,
+                dialogTitle: '',
+                bookForm: {
+                    id: '',
+                    name: '',
+                    author: '',
+                    price: '',
+                    stock: '',
+                    description: '',
+                    categoryId: ''
+                },
+                bookForm2: {
+                    id: '',
+                    name: '',
+                    author: '',
+                    price: '',
+                    stock: '',
+                    description: '',
+                    categoryId: ''
+                },
+                bookFormRules: {
+                    name: [{
+                        required: true,
+                        message: '请输入图书名称',
+                        trigger: 'blur'
+                    },
+                        {
+                            min: 3,
+                            max: 5,
+                            message: '长度在 3 到 5 个字符',
+                            trigger: 'blur'
+                        }
+                    ],
+                    author: [{
+                        required: true,
+                        message: '请输入作者姓名',
+                        trigger: 'blur'
+                    }],
+                    price: [{
+                        // type: 'number',
+                        required: true,
+                        message: '请输入图书价格',
+                        trigger: 'blur'
+                    }],
+                    stock: [{
+                        // type: 'number',
+                        required: true,
+                        message: '请输入图书价格',
+                        trigger: 'blur'
+                    }],
+                    categoryId1: [{
+                        required: true,
+                        message: '请选择图书类别',
+                        trigger: 'change'
+                    }],
+                    description: [{
+                        required: true,
+                        message: '请填写图书描述',
+                        trigger: 'blur'
+                    }]
+                },
+                categories: [],
+                tableData: [],
+                page: {
+                    total: 0,
+                    pageSize: 4,
+                    pageNum: 1, //此处只考虑从1开始
+                    currentPageTotal: 0,
+                    totalPages: 0
+                }
+            }
+        },
+        methods: {
+            handleEdit(index, row) {
+                this.dialogTitle = '更新图书信息'
+                this.dialogFormVisible = true
+                this.bookForm = row
+                console.log(index, row);
+            },
+            //删除图书
+            handleDelete(index, row) {
+                this.$confirm('删除' + row.name + ', 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.delete(basePath + '/api/book/' + row.id)
+                    .then(function (response) {
+                        if (response.data.code === 200) {
+                            vm.currentChange(vm.page.currentPageTotal > 1 ? vm.page.pageNum :
+                                (vm.page.pageNum > 1 ? vm.page.pageNum - 1 : 1))
+                            vm.$message({
+                                type: 'success',
+                                message: '删除成功!'
+                            });
+                        } else {
+                            vm.$message({
+                                type: 'error',
+                                message: '删除失败'
+                            });
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            }).catch(() => {
+                    this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
+            });
+                console.log(index, row);
+            },
+            handleAdd() {
+                this.dialogTitle = '添加图书'
+                this.bookForm = this.bookForm2
+                this.dialogFormVisible = true
+            },
+            handleSubmit(formName) {
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        this.addBook(this.bookForm)
+                    } else {
+                        console.log('error submit!!');
+                return false;
+            }
+            });
+            },
+            //添加图书
+            addBook(book) {
+                $.ajax({
+                    type: 'POST',
+                    url: basePath + '/api/book',
+                    data: book,
+                    success: function (response) {
+                        if (response.code == 200) {
+                            vm.dialogFormVisible = false
+                            vm.currentChange(vm.page.totalPages)
+                            vm.$message({
+                                type: 'success',
+                                message: '添加图书成功'
+                            });
+                        } else {
+                            vm.$message({
+                                type: 'error',
+                                message: '添加图书失败'
+                            });
+                        }
+                    }
+                });
+            },
+            //获取某页数据
+            currentChange(currentPage) {
+                axios.get(basePath + '/api/book', {
+                    params: {
+                        pageSize: this.page.pageSize,
+                        pageNum: currentPage - 1
+                    }
+                })
+                    .then(function (response) {
+                        if (response.data.code === 200) {
+                            vm.tableData = response.data.data.books
+                            vm.page.total = response.data.data.totalElements
+                            vm.page.pageNum = response.data.data.number + 1
+                            vm.page.currentPageTotal = response.data.data.numberOfElements
+                            vm.page.totalPages = response.data.data.totalPages
+                            console.log('books: ', response.data.data.books);
+                        } else {
+                            vm.$message({
+                                type: 'error',
+                                message: '获取数据失败'
+                            });
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                console.log(currentPage)
+            },
+
+            //获取书籍分类
+            getCategories() {
+                axios.get(basePath + '/api/category')
+                    .then(function (response) {
+                        var categories = response.data.data.categories
+                        vm.categories = categories
+                        console.log('categories: ', categories);
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            }
+        },
+        created() {
+            this.getCategories()
+            this.currentChange(this.page.pageNum)
+        },
+    })
+</script>
+
+</html>

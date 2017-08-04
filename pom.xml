@@ -12,6 +12,8 @@
     <modules>
         <module>relationship</module>
         <module>mbook</module>
+        <module>shiro</module>
+        <module>mybatis</module>
     </modules>
 
     <parent>

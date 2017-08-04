@@ -1,8 +1,8 @@
 spring:
   profiles:
     active: dev
-#  cache:
-#    type: simple
+  cache:
+    type: simple
 
 author:
   name: huzunrong

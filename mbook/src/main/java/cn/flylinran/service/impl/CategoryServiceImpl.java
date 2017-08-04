@@ -1,6 +1,6 @@
 package cn.flylinran.service.impl;
 
-import cn.flylinran.domain.Category;
+import cn.flylinran.entity.Category;
 import cn.flylinran.repos.CategoryRepository;
 import cn.flylinran.service.CategoryService;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,6 @@
 package cn.flylinran.repos;
 
-import cn.flylinran.domain.Category;
+import cn.flylinran.entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

@@ -1,8 +1,11 @@
-package cn.flylinran.handle;
+package cn.flylinran.aop;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -20,38 +23,26 @@ import javax.servlet.http.HttpServletRequest;
 @Component
 public class LogHandle {
 
-    private static Logger logger = LoggerFactory.getLogger(LogHandle.class);
+    private Logger logger = LoggerFactory.getLogger(LogHandle.class);
+    private ThreadLocal<Long> startTime = new ThreadLocal<>();
 
     @Pointcut("execution(public * cn.flylinran.controller.*.*(..))")
-    public void log() {
-        //空方法，简化下面的操作
-    }
+    public void log() {}
 
     @Before("log()")
     public void doBefore(JoinPoint joinPoint) {
+        startTime.set(System.currentTimeMillis());
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
         logger.info("接收请求 -> [{}]{} (From -> [{}])", request.getMethod(), request.getRequestURL(), request.getRemoteAddr());
         logger.info("处理请求 -> [{}.{}]", joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName());
         logger.info("前端传参 -> {}", JSONObject.toJSONString(request.getParameterMap()));
-        long startTime = System.currentTimeMillis();
-        request.setAttribute("startTime", startTime);
-    }
-
-    @After("log()")
-    public void doAfter(JoinPoint joinPoint) {
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        HttpServletRequest request = attributes.getRequest();
-
-        long startTime = (Long) request.getAttribute("startTime");
-        long endTime = System.currentTimeMillis();
-        long executeTime = endTime - startTime;
-
-        logger.info("处理时间 -> {}ms", executeTime);
     }
 
     @AfterReturning(returning = "object", pointcut = "log()")
     public void doAfterReturning(Object object) {
+        logger.info("处理时间 -> {}ms", System.currentTimeMillis() - startTime.get());
+
         logger.info("后台响应 -> {}", JSONObject.toJSONString(object));
     }
 }

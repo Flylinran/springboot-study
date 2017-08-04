@@ -1,6 +1,6 @@
 package cn.flylinran.service;
 
-import cn.flylinran.domain.Book;
+import cn.flylinran.entity.Book;
 import org.springframework.data.domain.Page;
 
 import java.util.Map;

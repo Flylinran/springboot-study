@@ -1,4 +1,4 @@
-package cn.flylinran.domain;
+package cn.flylinran.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

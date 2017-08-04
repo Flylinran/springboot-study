@@ -1,7 +1,7 @@
 package cn.flylinran.controller;
 
-import cn.flylinran.domain.Book;
-import cn.flylinran.domain.Category;
+import cn.flylinran.entity.Book;
+import cn.flylinran.entity.Category;
 import cn.flylinran.properties.AuthorProperties;
 import cn.flylinran.service.BookService;
 import cn.flylinran.service.CategoryService;
@@ -21,6 +21,8 @@ import java.util.Map;
  * version: 1.0
  */
 @RestController
+@RequestMapping("/api")
+@CrossOrigin("*")
 public class BookController {
 
     @Resource
